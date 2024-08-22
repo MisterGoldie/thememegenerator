@@ -55,6 +55,7 @@ app.frame('/generate', (c) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'hidden',
       }}>
         <img 
           src={image}
@@ -84,6 +85,8 @@ app.frame('/generate', (c) => {
             textAlign: 'center',
             maxWidth: '90%',
             wordWrap: 'break-word',
+            overflowWrap: 'break-word',
+            hyphens: 'auto',
             lineHeight: '1.2',
             textShadow: '2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(0,0,0,0.8), 2px -2px 4px rgba(0,0,0,0.8), -2px 2px 4px rgba(0,0,0,0.8)',
           }}>
