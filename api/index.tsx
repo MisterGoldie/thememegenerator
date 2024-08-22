@@ -94,7 +94,7 @@ app.frame('/generate', (c) => {
     ),
     imageAspectRatio: '1:1',
     intents: [
-      <Button action="/">restart</Button>
+      <Button action="/">Restart</Button>
     ],
   })
 })
