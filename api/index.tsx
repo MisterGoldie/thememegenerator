@@ -78,7 +78,7 @@ app.frame('/generate', (c) => {
         }}>
           <div style={{
             color: 'white',
-            fontSize: '80px',
+            fontSize: '60px',
             fontWeight: 'bold',
             fontFamily: 'Arial, Helvetica, sans-serif',
             textAlign: 'center',
