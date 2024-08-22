@@ -30,6 +30,7 @@ app.frame('/picker', (c) => {
 
   return c.res({
     image: image,
+    imageAspectRatio: '1:1',
     intents: [
       <TextInput placeholder="Enter text..." />,
       <Button action="/">Back</Button>,
@@ -38,7 +39,7 @@ app.frame('/picker', (c) => {
   });
 })
 
-app.frame('/generate', async (c) => {
+app.frame('/generate', (c) => {
   const { buttonValue, inputText } = c;
   const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmPy8AEdsktPXjZziFQxTQCLwHRtXVxPw1VF2soHKyqttY";
   const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt";
@@ -54,7 +55,6 @@ app.frame('/generate', async (c) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',
       }}>
         <img 
           src={image}
@@ -62,23 +62,33 @@ app.frame('/generate', async (c) => {
             position: 'absolute',
             width: '100%',
             height: '100%',
-            objectFit: 'cover',
+            objectFit: 'contain',
           }}
         />
         <div style={{
-          position: 'relative',
-          color: 'white',
-          fontSize: '60px',
-          fontWeight: 'bold',
-          fontFamily: 'Arial, Helvetica, sans-serif',
-          textAlign: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           padding: '20px',
-          maxWidth: '90%',
-          wordWrap: 'break-word',
-          lineHeight: '1.2',
-          textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
         }}>
-          {inputText}
+          <div style={{
+            color: 'white',
+            fontSize: '80px',
+            fontWeight: 'bold',
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            textAlign: 'center',
+            maxWidth: '90%',
+            wordWrap: 'break-word',
+            lineHeight: '1.2',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.8), -2px -2px 4px rgba(0,0,0,0.8), 2px -2px 4px rgba(0,0,0,0.8), -2px 2px 4px rgba(0,0,0,0.8)',
+          }}>
+            {inputText}
+          </div>
         </div>
       </div>
     ),
