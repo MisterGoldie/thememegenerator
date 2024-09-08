@@ -13,7 +13,7 @@ const app = new Frog({
 
 app.frame('/', (c) => {
   return c.res({
-    image: "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmdYBNvgqwt1eJV667UEpsLh3kbRhmVXToyUtzwfsyaznq",
+    image: "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmQu3WSN8JE1cgjpUY7fVy3nRtfzWRyPU5TLvusdf92PT4",
     intents: [
       <Button action="/picker" value="A">A</Button>,
       <Button action="/picker" value="B">B</Button>,
