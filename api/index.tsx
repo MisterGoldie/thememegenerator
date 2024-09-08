@@ -23,7 +23,7 @@ app.frame('/', (c) => {
 
 app.frame('/picker', (c) => {
   const { buttonValue } = c;
-  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmPy8AEdsktPXjZziFQxTQCLwHRtXVxPw1VF2soHKyqttY";
+  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV";
   const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt";
 
   const image = buttonValue === 'A' ? imageA : imageB;
