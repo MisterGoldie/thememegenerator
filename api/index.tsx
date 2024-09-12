@@ -44,6 +44,11 @@ app.frame('/generate', (c) => {
   const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV";
   const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt";
 
+  const originalFramesLink = 'https://thememegenerator.vercel.app/api' // Replace with your actual Frames link
+
+  // Construct the Farcaster share URL with both text and the embedded link
+  const farcasterShareURL = `https://warpcast.com/~/compose?text=Check%20out%20this%20meme%20generator%20and%20make%20sure%20to%20follow%20@goldie%20on%20Farcaster!&embeds[]=${encodeURIComponent(originalFramesLink)}`
+
   const image = buttonValue === 'A' ? imageA : imageB;
 
   return c.res({
@@ -97,7 +102,15 @@ app.frame('/generate', (c) => {
     ),
     imageAspectRatio: '1:1',
     intents: [
+       // Share Button with both text and link embedded
+       <Button.Link 
+       href={farcasterShareURL}
+     >
+       Share
+     </Button.Link>,  // This button now shares both text and the link
+ 
       <Button action="/">Restart</Button>
+      
     ],
   })
 })
