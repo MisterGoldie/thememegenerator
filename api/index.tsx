@@ -5,28 +5,105 @@ import { devtools } from 'frog/dev'
 import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
 
+const NEYNAR_API_KEY = '71332A9D-240D-41E0-8644-31BD70E64036' // Replace with your actual Neynar API key
+
 const app = new Frog({
   assetsPath: '/',
   basePath: '/api',
   title: 'memegenerator2',
 })
 
+interface NeynarReaction {
+  reaction_type: string;
+  // Add other properties if needed
+}
+
+interface NeynarResponse {
+  reactions: NeynarReaction[];
+  // Add other properties if needed
+}
+
+async function checkLikeAndRecast(fid: string, castHash: string): Promise<boolean> {
+  const url = `https://api.neynar.com/v2/farcaster/reactions?fid=${fid}&cast_hash=${castHash}&reaction_type=like,recast`
+  const options = {
+    method: 'GET',
+    headers: { accept: 'application/json', api_key: NEYNAR_API_KEY }
+  }
+
+  try {
+    const response = await fetch(url, options)
+    const json = await response.json() as NeynarResponse
+    const reactions = json.reactions || []
+    const hasLiked = reactions.some(r => r.reaction_type === 'like')
+    const hasRecast = reactions.some(r => r.reaction_type === 'recast')
+    return hasLiked && hasRecast
+  } catch (err) {
+    console.error('Error checking like and recast:', err)
+    return false
+  }
+}
+
 app.frame('/', (c) => {
   return c.res({
     image: "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmQu3WSN8JE1cgjpUY7fVy3nRtfzWRyPU5TLvusdf92PT4",
     intents: [
-      <Button action="/picker" value="A">A</Button>,
-      <Button action="/picker" value="B">B</Button>,
+      <Button action="/check-interaction" value="A">A</Button>,
+      <Button action="/check-interaction" value="B">B</Button>,
     ],
   })
 })
 
-app.frame('/picker', (c) => {
-  const { buttonValue } = c;
-  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV";
-  const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt";
+app.frame('/check-interaction', async (c) => {
+  const { buttonValue } = c
+  const fid = c.frameData?.fid
+  const castHash = c.frameData?.castId?.hash
 
-  const image = buttonValue === 'A' ? imageA : imageB;
+  if (!fid || !castHash) {
+    return c.res({
+      image: (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: '#1DA1F2' }}>
+          <h1 style={{ fontSize: '36px', marginBottom: '20px', color: 'white' }}>Error: Missing FID or Cast Hash</h1>
+        </div>
+      ),
+      intents: [
+        <Button action="/">Back</Button>
+      ]
+    })
+  }
+
+  const hasLikedAndRecast = await checkLikeAndRecast(fid.toString(), castHash)
+
+  if (!hasLikedAndRecast) {
+    return c.res({
+      image: (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: '#1DA1F2' }}>
+          <h1 style={{ fontSize: '36px', marginBottom: '20px', color: 'white' }}>Please like and recast to continue</h1>
+        </div>
+      ),
+      intents: [
+        <Button action="/check-interaction" value={buttonValue}>Check again</Button>
+      ]
+    })
+  }
+
+  return c.res({
+    image: (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', backgroundColor: '#1DA1F2' }}>
+        <h1 style={{ fontSize: '36px', marginBottom: '20px', color: 'white' }}>Thank you! Click to continue</h1>
+      </div>
+    ),
+    intents: [
+      <Button action="/picker" value={buttonValue}>Continue</Button>
+    ]
+  })
+})
+
+app.frame('/picker', (c) => {
+  const { buttonValue } = c
+  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV"
+  const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt"
+
+  const image = buttonValue === 'A' ? imageA : imageB
 
   return c.res({
     image: image,
@@ -36,20 +113,19 @@ app.frame('/picker', (c) => {
       <Button action="/">Back</Button>,
       <Button action="/generate" value={buttonValue}>Generate</Button>,
     ],
-  });
+  })
 })
 
 app.frame('/generate', (c) => {
-  const { buttonValue, inputText } = c;
-  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV";
-  const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt";
+  const { buttonValue, inputText } = c
+  const imageA = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmVxD55EV753EqPwgsaLWq4635sT6UR1M1ft2vhL3GZpeV"
+  const imageB = "https://amaranth-adequate-condor-278.mypinata.cloud/ipfs/QmcBQuKTWvRHuWgLt4sSdTrCCYVeY47v1maaWhMynne7Gt"
 
   const originalFramesLink = 'https://thememegenerator.vercel.app/api' // Replace with your actual Frames link
 
-  // Construct the Farcaster share URL with both text and the embedded link
   const farcasterShareURL = `https://warpcast.com/~/compose?text=Check%20out%20this%20meme%20generator%20and%20make%20sure%20to%20follow%20@goldie%20on%20Farcaster!&embeds[]=${encodeURIComponent(originalFramesLink)}`
 
-  const image = buttonValue === 'A' ? imageA : imageB;
+  const image = buttonValue === 'A' ? imageA : imageB
 
   return c.res({
     image: (
@@ -102,15 +178,8 @@ app.frame('/generate', (c) => {
     ),
     imageAspectRatio: '1:1',
     intents: [
-       // Share Button with both text and link embedded
-       <Button.Link 
-       href={farcasterShareURL}
-     >
-       Share
-     </Button.Link>,  // This button now shares both text and the link
- 
+      <Button.Link href={farcasterShareURL}>Share</Button.Link>,
       <Button action="/">Restart</Button>
-      
     ],
   })
 })
