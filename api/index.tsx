@@ -46,7 +46,7 @@ app.frame('/generate', (c) => {
 
   const originalFramesLink = 'https://thememegenerator.vercel.app/api' // Replace with your actual Frames link
 
-  // Construct the Farcaster share URL with both text and the embedded link
+  // Construct the Farcaster share URL with both text and the embedded links
   const farcasterShareURL = `https://warpcast.com/~/compose?text=Check%20out%20this%20meme%20generator%20and%20make%20sure%20to%20follow%20@goldie%20on%20Farcaster!&embeds[]=${encodeURIComponent(originalFramesLink)}`
 
   const image = buttonValue === 'A' ? imageA : imageB;
